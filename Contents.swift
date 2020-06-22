@@ -1,11 +1,13 @@
 
 // MARK: - MVVM(Model-View-ViewModel) DesignPattern Study
+
 // - MVVM(모델-뷰-뷰모델) 학습 정리
 
 import PlaygroundSupport
 import UIKit
 
 // MARK: - Model
+
 // - 예를 들면, pets를 채택하는 앱의 일부로서 Pet View를 만들 수 있습니다. 먼저, 아래와 같은 코드를 작성합니다.
 public class Pet {
     public enum Rarity {
@@ -14,12 +16,12 @@ public class Pet {
         case rare
         case veryRare
     }
-    
+
     public let name: String
     public let birthday: Date
     public let rarity: Rarity
     public let image: UIImage
-    
+
     public init(name: String,
                 birthday: Date,
                 rarity: Rarity,
@@ -36,25 +38,26 @@ public class Pet {
 // 그 다음, playground 끝에 다음과 같은 코드를 작성해줍니다.
 
 // MARK: - ViewModel
+
 public class PetViewModel {
     // 1) pet
     private let pet: Pet
     private let calendar: Calendar
-    
+
     public init(pet: Pet) {
         self.pet = pet
-        self.calendar = Calendar(identifier: .gregorian)
+        calendar = Calendar(identifier: .gregorian)
     }
-    
+
     // 2) name
     public var name: String {
         return pet.name
     }
-    
+
     public var image: UIImage {
         return pet.image
     }
-    
+
     // 3) ageText
     public var ageText: String {
         let today = calendar.startOfDay(for: Date())
@@ -63,7 +66,7 @@ public class PetViewModel {
         let age = components.year!
         return "\(age) years old"
     }
-    
+
     // 4) adoptionFeeText
     public var adoptionFeeText: String {
         switch pet.rarity {
@@ -88,12 +91,13 @@ public class PetViewModel {
 // 이제 부터 이러한 pet의 정보를 표출하기 위한 UIView가 필요합니다. Model, ViewModel에 이은 View입니다.
 
 // MARK: - View
+
 public class PetView: UIView {
     public let imageView: UIImageView
     public let nameLabel: UILabel
     public let ageLabel: UILabel
     public let adoptionFeeLabel: UILabel
-    
+
     public override init(frame: CGRect) {
         var childFrame = CGRect(x: 0,
                                 y: 16,
@@ -101,32 +105,32 @@ public class PetView: UIView {
                                 height: frame.height / 2)
         imageView = UIImageView(frame: childFrame)
         imageView.contentMode = .scaleAspectFit
-        
+
         childFrame.origin.y += childFrame.height + 16
         childFrame.size.height = 30
-        
+
         nameLabel = UILabel(frame: childFrame)
         nameLabel.textAlignment = .center
-        
+
         childFrame.origin.y += childFrame.height
         ageLabel = UILabel(frame: childFrame)
         nameLabel.textAlignment = .center
-        
+
         childFrame.origin.y += childFrame.height
         adoptionFeeLabel = UILabel(frame: childFrame)
         adoptionFeeLabel.textAlignment = .center
-        
+
         super.init(frame: frame)
-        
+
         backgroundColor = .white
         addSubview(imageView)
         addSubview(nameLabel)
         addSubview(ageLabel)
         addSubview(adoptionFeeLabel)
     }
-    
+
     @available(*, unavailable)
-    public required init?(coder: NSCoder) {
+    public required init?(coder _: NSCoder) {
         fatalError("init?(coder:) is not supported")
     }
 }
@@ -137,8 +141,9 @@ public class PetView: UIView {
 // 이제, Model, ViewModel, View가 준비되었으며, 클래스들을 동작시킬 준비가 되었습니다. 이어서 아래의 코드를 작성해 봅니다.
 
 // MARK: - Example to Action
+
 // 1
-let birthday = Date(timeIntervalSinceNow: (-2 * 85400 * 366))
+let birthday = Date(timeIntervalSinceNow: -2 * 85400 * 366)
 let image = UIImage(named: "stuart")!
 let stuart = Pet(name: "Stuart",
                  birthday: birthday,
