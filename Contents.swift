@@ -1,12 +1,12 @@
 
 // MARK: - MVVM(Model-View-ViewModel) DesignPattern Study
 
-// - MVVM(모델-뷰-뷰모델) 학습 정리
+// MARK: - MVVM(모델-뷰-뷰모델) 학습 정리
 
 import PlaygroundSupport
 import UIKit
 
-// MARK: - Model
+// MARK: Model
 
 // - 예를 들면, pets를 채택하는 앱의 일부로서 Pet View를 만들 수 있습니다. 먼저, 아래와 같은 코드를 작성합니다.
 public class Pet {
@@ -37,7 +37,7 @@ public class Pet {
 
 // 그 다음, playground 끝에 다음과 같은 코드를 작성해줍니다.
 
-// MARK: - ViewModel
+// MARK: ViewModel
 
 public class PetViewModel {
     // 1) pet
@@ -90,7 +90,7 @@ public class PetViewModel {
 
 // 이제 부터 이러한 pet의 정보를 표출하기 위한 UIView가 필요합니다. Model, ViewModel에 이은 View입니다.
 
-// MARK: - View
+// MARK: View
 
 public class PetView: UIView {
     public let imageView: UIImageView
@@ -111,10 +111,11 @@ public class PetView: UIView {
 
         nameLabel = UILabel(frame: childFrame)
         nameLabel.textAlignment = .center
+        nameLabel.textAlignment = .center
 
         childFrame.origin.y += childFrame.height
         ageLabel = UILabel(frame: childFrame)
-        nameLabel.textAlignment = .center
+        ageLabel.textAlignment = .center
 
         childFrame.origin.y += childFrame.height
         adoptionFeeLabel = UILabel(frame: childFrame)
@@ -158,10 +159,41 @@ let frame = CGRect(x: 0, y: 0, width: 300, height: 420)
 let view = PetView(frame: frame)
 
 // 4
-view.nameLabel.text = viewModel.name
-view.imageView.image = viewModel.image
-view.ageLabel.text = viewModel.ageText
-view.adoptionFeeLabel.text = viewModel.adoptionFeeText
+
+/*
+ // 1) viewModel extension -> configure 메서드 미사용 시
+ view.nameLabel.text = viewModel.name
+ view.imageView.image = viewModel.image
+ view.ageLabel.text = viewModel.ageText
+ view.adoptionFeeLabel.text = viewModel.adoptionFeeText
+ */
+// 2) viewModel extension -> configure 메서드 사용 시
+viewModel.configure(view)
 
 // 5
 PlaygroundPage.current.liveView = view
+
+// 1 ~ 5 까지의 과정을 보도록 하겠습니다.
+// 1. stuart라는 새로운 Pet을 생성했습니다.
+// 2. stuart를 사용해서 viewModel을 생성했습니다.
+// 3. iOS에서 일반적인 frame size를 넘겨서 view를 생성했습니다.
+// 4. viewModel을 사용해서 subviews를 설정했습니다.
+// 5. 마지막으로 PlaygroundPage에 view를 설정했습니다.
+// .   - PlaygroundPage.current.liveView -> 해당 코드는 playground에게 standard Assistant editor에 view를 렌더링 하라는 의미입니다.
+// -> 해당 결과를 보기 위해서는 Editor -> Live View를 선택해서 렌더링 된 View를 볼 수 있습니다.
+
+// - 결과적으로 나오는 뷰의 동물은 Stuart가 맞나요? 그는 cookie monster입니다. 또한 이놈은 매우 희귀(rare)합니다.
+// 이제 마지막으로 코드를 작성해 봅니다. 해당 예제에 적용할 수 있는 코드입니다. 다음의 PetViewModel extension 코드를 작성해좁니다.
+// 아래의 exntension코드 내 configure 메서드를 사용하면, viewModel을 사용해서 view를 설정할 수 있게 됩니다.
+// 해당 extension 코드는 view의 설정 코드를 viewModel 내에서 처리할 수 있는 산뜻한 방법이 됩니다. 실전에서 이런 구현이 필요할 수도, 원하지 않을 수도 있습니다. 어쨋든, 만약 view에 대한 설정을 viewModel에서 처리하고 싶다면, 아래와 같은 구현은 유용하게 사용할 수 있습니다.
+// 만약 viewModel이 단일 뷰만 관리한다면 아래와 같이 viewModel에서 처리할 수 있겠지만, 하나의 viewModel이 다수의 뷰를 관리한다면, 별개로 처리하는게 좋을 수도 있습니다.
+extension PetViewModel {
+    public func configure(_ view: PetView) {
+        view.nameLabel.text = name
+        view.imageView.image = image
+        view.ageLabel.text = ageText
+        view.adoptionFeeLabel.text = adoptionFeeText
+    }
+}
+
+// MARK: - MMVM을 구현할 때 무엇을 주의해야 할까요?
